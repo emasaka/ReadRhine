@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
+require 'termios'
+
 module ReadRhine
   class TTY
     def initialize
-      @state = `stty -g`
-      system 'stty -echo -icanon isig'
+      @state = Termios.tcgetattr(STDIN)
+      newstate = @state.dup
+      newstate.lflag &= ~Termios::ECHO & ~Termios::ICANON & Termios::ISIG
+      Termios.tcsetattr(STDIN, Termios::TCSANOW, newstate)
     end
 
     def finalize
-      system "stty #{@state}"
+      Termios.tcsetattr(STDIN, Termios::TCSANOW, @state)
     end
 
     def read_key
