@@ -14,10 +14,12 @@ module ReadRhine
       sync_screen_size
       Signal.trap(:WINCH) { sync_screen_size }
 
-      @tty.print prompt if prompt
       @prompt = WString.new(prompt)
       @prompt_width = @prompt.width
       @col = @prompt_width
+
+      @tty.print prompt if prompt
+      redisplay if buffer.size > 0
     end
 
     def redisplay

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 module ReadRhine
-  def self.readline(prompt = '')
-    setup(prompt)
+  def self.readline(prompt = '', options = {})
+    setup(prompt, options)
     begin
       charloop
     ensure
@@ -17,8 +17,8 @@ module ReadRhine
 
   private
 
-  def self.setup(prompt)
-    @@buffer = ReadRhine::Buffer.new
+  def self.setup(prompt, options)
+    @@buffer = ReadRhine::Buffer.new(options[:preput] || '')
     @@tty = ReadRhine::TTY.new
     @@display = ReadRhine::Display.new(@@buffer, @@tty, prompt)
     @@last_command_char = nil
