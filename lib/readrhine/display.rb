@@ -107,7 +107,7 @@ module ReadRhine
     end
 
     def sync_screen_size
-      @screen_cols, @screen_rows = TermInfo.tiocgwinsz(@tty.stdout)
+      @screen_rows, @screen_cols = TermInfo.tiocgwinsz(@tty.stdout)
     end
 
   end
