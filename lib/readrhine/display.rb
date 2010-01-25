@@ -1,25 +1,16 @@
 # -*- coding: utf-8 -*-
 
+require 'terminfo'
+
 module ReadRhine
 
   class Display
-    TERM_CUB = "\e[%dD"         # cursor back n
-    TERM_CUB1 = "\b"            # cursor back 1
-    TERM_CUF = "\e[%dC"         # cursor forward n
-    TERM_CUF1 = "\e[C"          # cursor forward 1
-    TERM_CUU = "\e[%dA"         # cursor up n
-    TERM_CUU1 = "\e[A"          # cursor up 1
-    TERM_CUD = "\e[%dB"         # cursor down n
-    TERM_EL = "\e[K"            # clear to end-of-line
-    TERM_EL1 = "\e[1K"          # clear to begenning-of-line
-    TERM_SC = "\e7"             # save cursor position
-    TERM_RC = "\e8"             # restore cursor position
-
     def initialize(buffer, tty, prompt = '')
       @buffer = buffer
       @tty = tty
       @line = WString.new('')
 
+      @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
       sync_screen_size
       Signal.trap(:WINCH) { sync_screen_size }
 
@@ -69,20 +60,28 @@ module ReadRhine
     end
 
     def cursor_left(n)
-      s = TERM_CUB % n
-      @tty.print(n < s.bytesize * TERM_CUB1.bytesize ? TERM_CUB1 * n : s)
+      s = @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cub'), n), 1)
+      s1 = @terminfo.tputs(@terminfo.tigetstr('cub1'), 1)
+      @tty.print(s.bytesize < s1.bytesize * n ? s : s1 * n)
     end
 
     def cursor_right(n)
-      @tty.print(n == 1 ? TERM_CUF1 : (TERM_CUF % n))
+      @tty.print(n == 1 ? 
+                 @terminfo.tputs(@terminfo.tigetstr('cuf1'), 1) :
+                 @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cuf'),
+                                                 n ), 1))
     end
 
     def cursor_up(n)
-      @tty.print(n == 1 ? TERM_CUU1 : (TERM_CUU % n))
+      @tty.print(n == 1 ? 
+                 @terminfo.tputs(@terminfo.tigetstr('cuu1'), 1) :
+                 @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cuu'),
+                                                 n ), 1))
     end
 
     def cursor_down(n)
-      @tty.print(TERM_CUD % n)
+      @tty.print(@terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cud'),
+                                                 n ), 1))
     end
 
     def calculate_move(from, to)
@@ -93,12 +92,14 @@ module ReadRhine
     def erase_eol(col)
       lw = @line.width + @prompt_width
       if col < lw
-        @tty.print TERM_EL
+        el = @terminfo.tputs(@terminfo.tigetstr('el'), 1)
+        @tty.print el
         m = calculate_move(col, lw)
         if m[:rows] > 0
+          el1 = @terminfo.tputs(@terminfo.tigetstr('el1'), 1)
           m[:rows].times do
             cursor_down 1
-            @tty.print TERM_EL1, TERM_EL
+            @tty.print el1, el
           end
           cursor_up m[:rows]
         end
@@ -106,9 +107,7 @@ module ReadRhine
     end
 
     def sync_screen_size
-      sz = @tty.screen_size
-      @screen_cols = sz[:cols]
-      @screen_rows = sz[:rows]
+      @screen_cols, @screen_rows = TermInfo.tiocgwinsz(@tty.stdout)
     end
 
   end

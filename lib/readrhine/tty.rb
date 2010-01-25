@@ -23,10 +23,8 @@ module ReadRhine
       STDOUT.print *args
     end
 
-    def screen_size
-      r = {}
-      r[:rows], r[:cols] = `stty size`.split.map {|e| e.to_i}
-      r
+    def stdout
+      STDOUT
     end
 
   end
