@@ -26,6 +26,12 @@ module ReadRhine
   end
 
   def self.finalize
+    if @@buffer.point != @@buffer.size
+      @@buffer.point = @@buffer.size
+      @@display.redisplay
+    end
+    print "\n"
+
     @@tty.finalize
   end
 
@@ -33,7 +39,6 @@ module ReadRhine
     while true
       seq = read_key_seq(@@keymap)
       if seq == "\n"
-        print "\n"
         break
       end
       @@last_command_char = seq
