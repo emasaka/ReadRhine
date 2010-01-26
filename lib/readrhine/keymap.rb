@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 module ReadRhine
+  class CommandNotFound < StandardError; end
+
   class Keymap
     LookupData = Struct.new('LookupData', :table, :key)
 
@@ -11,9 +13,16 @@ module ReadRhine
     def [](key)
       r = lookup_key_hash(key)
       if r.key.size == 1
-        r.table[r.key] or :insert_char
+        f = r.table[r.key]
+        if f
+          f
+        elsif key.size == 1
+          :insert_char
+        else
+          raise CommandNotFound, key
+        end
       else                      # just to be sure
-        raise "#{key.inspect} not found"
+        raise CommandNotFound, key
       end
     end
 

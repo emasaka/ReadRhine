@@ -43,9 +43,13 @@ module ReadRhine
   end
 
   def self.dispatch(key, keymap)
-    cmd = keymap[key]
-    __send__(cmd, 1)
-    @@last_command = cmd
+    begin
+      cmd = keymap[key]
+      __send__(cmd, 1)
+      @@last_command = cmd
+    rescue CommandNotFound => e
+      # TODO: some notification
+    end
   end
 
   def self.read_key_seq(keymap)
