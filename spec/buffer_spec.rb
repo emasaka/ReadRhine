@@ -31,46 +31,46 @@ describe ReadRhine::Buffer, "editing" do
   end
 
   it "should contains inserted string" do
-    @ins_str = 'xyz'
-    @buffer.insert(@ins_str)
-    @buffer.to_s.should == @ins_str
+    ins_str = 'xyz'
+    @buffer.insert(ins_str)
+    @buffer.to_s.should == ins_str
   end
 
   it "should contains inserted string at end" do
-    @ins_str1 = 'xyz'
-    @ins_str2 = '123'
-    @buffer.insert(@ins_str1)
-    @buffer.insert(@ins_str2)
+    ins_str1 = 'xyz'
+    ins_str2 = '123'
+    @buffer.insert(ins_str1)
+    @buffer.insert(ins_str2)
 
-    @buffer.to_s.should == @ins_str1 + @ins_str2
+    @buffer.to_s.should == ins_str1 + ins_str2
   end
 
   it "should contains inserted string at top" do
-    @ins_str1 = 'xyz'
-    @ins_str2 = '123'
-    @buffer.insert(@ins_str1)
+    ins_str1 = 'xyz'
+    ins_str2 = '123'
+    @buffer.insert(ins_str1)
     @buffer.point = 0
-    @buffer.insert(@ins_str2)
+    @buffer.insert(ins_str2)
 
-    @buffer.to_s.should == @ins_str2 + @ins_str1
+    @buffer.to_s.should == ins_str2 + ins_str1
   end
 
   it "should delete characters at top" do
-    @ins_str = 'xyz'
-    @del_size = 2
-    @buffer.insert(@ins_str)
+    ins_str = 'xyz'
+    del_size = 2
+    @buffer.insert(ins_str)
     @buffer.point = 0
-    @buffer.delete_char(@del_size)
+    @buffer.delete_char(del_size)
 
-    @buffer.to_s.should == @ins_str[@del_size..-1]
+    @buffer.to_s.should == ins_str[del_size..-1]
   end
 
   it "should delete characters at end" do
-    @ins_str = 'xyz'
-    @del_size = 2
-    @buffer.insert(@ins_str)
-    @buffer.delete_char(- @del_size)
+    ins_str = 'xyz'
+    del_size = 2
+    @buffer.insert(ins_str)
+    @buffer.delete_char(- del_size)
 
-    @buffer.to_s.should == @ins_str[0 ... - @del_size]
+    @buffer.to_s.should == ins_str[0 ... - del_size]
   end
 end
