@@ -32,7 +32,7 @@ module ReadRhine
         if @point > 0
           st = @point + n
           st = 0 if st < 0
-          @buffer[st .. @point - 1] = ''
+          @buffer[st ... @point] = ''
           @point = st
         end
       end
