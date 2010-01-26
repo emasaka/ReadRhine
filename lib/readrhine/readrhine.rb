@@ -50,7 +50,7 @@ module ReadRhine
   def self.dispatch(key, keymap)
     begin
       cmd = keymap[key]
-      __send__(cmd, 1)
+      __send__(cmd, 1, key)
       @@last_command = cmd
     rescue CommandNotFound => e
       # TODO: some notification
