@@ -21,6 +21,7 @@ module ReadRhine
     @@buffer = ReadRhine::Buffer.new(options[:preput] || '')
     @@tty = ReadRhine::TTY.new
     @@display = ReadRhine::Display.new(@@buffer, @@tty, prompt)
+    @@undo = ReadRhine::Undo.new
     @@last_command_char = nil
     @@last_command = nil
   end

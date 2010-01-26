@@ -3,28 +3,28 @@
 module ReadRhine
   def self.insert_char(count, key)
     s = (count == 1 ? key : key * count)
-    Undo.add(Undo::INSERT, @@buffer.point, s.size, nil)
+    @@undo.add(Undo::INSERT, @@buffer.point, s.size, nil)
     @@buffer.insert(s)
   end
 
   def self.backward_delete_char(count, key)
     deleted = @@buffer.delete_char(- count)
-    Undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
+    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
   end
 
   def self.delete_char(count, key)
     deleted = @@buffer.delete_char(count)
-    Undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
+    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
   end
 
   def self.unix_line_discard(count, key)
     deleted = @@buffer.delete_char(- @@buffer.point)
-    Undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
+    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
   end
 
   def self.kill_line(count, key)
     deleted = @@buffer.delete_char(@@buffer.size - @@buffer.point)
-    Undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
+    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
   end
 
   def self.backward_char(count, key)
@@ -47,7 +47,7 @@ module ReadRhine
 
   def self.undo(count, key)
     count.times do
-      Undo.undo(@@buffer)
+      @@undo.undo(@@buffer)
     end
   end
 
