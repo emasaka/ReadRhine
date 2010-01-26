@@ -23,19 +23,27 @@ module ReadRhine
     end
 
     def delete_char(n)
+      deleted = nil
       if n > 0
         # delete forward
         n = size - point if size - point < n
-        @buffer[@point, n] = '' if n > 0
+        if n > 0
+          deleted = @buffer[@point, n]
+          @buffer[@point, n] = ''
+        end
       else
         # delete backward
         if @point > 0
           st = @point + n
           st = 0 if st < 0
-          @buffer[st ... @point] = ''
-          @point = st
+          if st < @point
+            deleted = @buffer[st ... @point]
+            @buffer[st ... @point] = ''
+            @point = st
+          end
         end
       end
+      deleted
     end
 
   end

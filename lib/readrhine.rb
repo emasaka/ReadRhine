@@ -4,6 +4,7 @@ require 'readrhine/system_extensions'
 require 'readrhine/buffer'
 require 'readrhine/display'
 require 'readrhine/tty'
+require 'readrhine/undo'
 require 'readrhine/command'
 require 'readrhine/keymap'
 
