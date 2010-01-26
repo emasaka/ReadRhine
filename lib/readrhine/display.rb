@@ -47,17 +47,19 @@ module ReadRhine
 
     private
 
+    Movement = Struct.new('Movement', :rows, :cols)
+
     def cursor_move(from, to)
       m = calculate_move(from, to)
-      if m[:rows] < 0
-        cursor_up(- m[:rows])
-      elsif m[:rows] > 0
-        cursor_down(m[:rows])
+      if m.rows < 0
+        cursor_up(- m.rows)
+      elsif m.rows > 0
+        cursor_down(m.rows)
       end
-      if m[:cols] < 0
-        cursor_left(- m[:cols])
-      elsif m[:cols] > 0
-        cursor_right(m[:cols])
+      if m.cols < 0
+        cursor_left(- m.cols)
+      elsif m.cols > 0
+        cursor_right(m.cols)
       end
     end
 
@@ -87,8 +89,8 @@ module ReadRhine
     end
 
     def calculate_move(from, to)
-      { rows: to / @screen_cols - from / @screen_cols,
-        cols: to % @screen_cols - from % @screen_cols }
+      Movement.new(to / @screen_cols - from / @screen_cols,  # rows
+                   to % @screen_cols - from % @screen_cols ) # cols
     end
 
     def erase_eol(col)
@@ -97,13 +99,13 @@ module ReadRhine
         el = @terminfo.tputs(@terminfo.tigetstr('el'), 1)
         @tty.print el
         m = calculate_move(col, lw)
-        if m[:rows] > 0
+        if m.rows > 0
           el1 = @terminfo.tputs(@terminfo.tigetstr('el1'), 1)
-          m[:rows].times do
+          m.rows.times do
             cursor_down 1
             @tty.print el1, el
           end
-          cursor_up m[:rows]
+          cursor_up m.rows
         end
       end
     end
