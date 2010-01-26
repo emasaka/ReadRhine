@@ -15,7 +15,7 @@ module ReadRhine
     @@keymap
   end
 
-  private
+  # private methods
 
   def self.setup(prompt, options)
     @@buffer = ReadRhine::Buffer.new(options[:preput] || '')
@@ -56,4 +56,7 @@ module ReadRhine
       Keymap === keymap.lookup_keyseq(seq) or return seq
     end
   end
+
+  private_class_method :setup, :finalize, :charloop, :dispatch, :read_key_seq
+
 end
