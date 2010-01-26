@@ -34,6 +34,9 @@ module ReadRhine
     print "\n"
 
     @@tty.finalize
+
+    @@buffer = @@tty = @@display = @@undo = @@last_command_char =
+      @@last_command = nil
   end
 
   def self.charloop
