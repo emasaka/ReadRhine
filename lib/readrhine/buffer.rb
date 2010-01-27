@@ -17,6 +17,10 @@ module ReadRhine
       @buffer.size
     end
 
+    def empty?
+      @buffer.empty?
+    end
+
     def insert(str)
       @buffer[@point, 0] = str
       @point += str.size

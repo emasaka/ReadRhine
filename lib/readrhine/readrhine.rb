@@ -19,7 +19,7 @@ module ReadRhine
 
   def self.setup(prompt, options)
     @@buffer = ReadRhine::Buffer.new(options[:preput] || '')
-    @@tty = ReadRhine::TTY.new
+    @@tty = ReadRhine::TTY.new(@@buffer)
     @@display = ReadRhine::Display.new(@@buffer, @@tty, prompt)
     @@undo = ReadRhine::Undo.new
     @@last_command_char = nil
