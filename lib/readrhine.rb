@@ -13,7 +13,6 @@ require 'readrhine/readrhine'
 
 
 if __FILE__ == $0
-  # ReadRhine.keymap["\x00"] = :forward_char
   str = ReadRhine.readline('> ')
   p str
 end

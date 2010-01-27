@@ -4,8 +4,11 @@ require 'termios'
 
 module ReadRhine
   class TTY
-    def initialize(buffer)
-      @buffer = buffer
+    def initialize(rl)
+      @rl = rl
+    end
+
+    def start
       @state = Termios.tcgetattr(STDIN)
       @eof_char = @state.cc[Termios::VEOF].chr
       newstate = @state.dup
@@ -13,13 +16,13 @@ module ReadRhine
       Termios.tcsetattr(STDIN, Termios::TCSANOW, newstate)
     end
 
-    def finalize
+    def finish
       Termios.tcsetattr(STDIN, Termios::TCSANOW, @state)
     end
 
     def read_key
       c = STDIN.getc
-      raise EOFError if c == @eof_char && @buffer.empty?
+      raise EOFError if c == @eof_char && @rl.buffer.empty?
       c
     end
 

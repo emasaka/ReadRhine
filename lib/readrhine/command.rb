@@ -1,54 +1,60 @@
 # -*- coding: utf-8 -*-
 
 module ReadRhine
-  def self.insert_char(count, key)
-    s = (count == 1 ? key : key * count)
-    @@undo.add(Undo::INSERT, @@buffer.point, s.size, nil)
-    @@buffer.insert(s)
-  end
-
-  def self.backward_delete_char(count, key)
-    deleted = @@buffer.delete_char(- count)
-    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
-  end
-
-  def self.delete_char(count, key)
-    deleted = @@buffer.delete_char(count)
-    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
-  end
-
-  def self.unix_line_discard(count, key)
-    deleted = @@buffer.delete_char(- @@buffer.point)
-    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
-  end
-
-  def self.kill_line(count, key)
-    deleted = @@buffer.delete_char(@@buffer.size - @@buffer.point)
-    @@undo.add(Undo::DELETE, @@buffer.point, nil, deleted) if deleted
-  end
-
-  def self.backward_char(count, key)
-    @@buffer.point -= count
-    @@buffer.point = 0 if @@buffer.point < 0
-  end
-
-  def self.forward_char(count, key)
-    @@buffer.point += count
-    @@buffer.point = @@buffer.size if @@buffer.point > @@buffer.size
-  end
-
-  def self.beginning_of_line(count, key)
-    @@buffer.point = 0
-  end
-
-  def self.end_of_line(count, key)
-    @@buffer.point = @@buffer.size
-  end
-
-  def self.undo(count, key)
-    count.times do
-      @@undo.undo(@@buffer)
+  class Command
+    def initialize(rl)
+      @rl = rl
     end
-  end
 
+    def insert_char(count, key)
+      s = (count == 1 ? key : key * count)
+      @rl.undo.add(Undo::INSERT, @rl.buffer.point, s.size, nil)
+      @rl.buffer.insert(s)
+    end
+
+    def backward_delete_char(count, key)
+      deleted = @rl.buffer.delete_char(- count)
+      @rl.undo.add(Undo::DELETE, @rl.buffer.point, nil, deleted) if deleted
+    end
+
+    def delete_char(count, key)
+      deleted = @rl.buffer.delete_char(count)
+      @rl.undo.add(Undo::DELETE, @rl.buffer.point, nil, deleted) if deleted
+    end
+
+    def unix_line_discard(count, key)
+      deleted = @rl.buffer.delete_char(- @rl.buffer.point)
+      @rl.undo.add(Undo::DELETE, @rl.buffer.point, nil, deleted) if deleted
+    end
+
+    def kill_line(count, key)
+      deleted = @rl.buffer.delete_char(@rl.buffer.size - @rl.buffer.point)
+      @rl.undo.add(Undo::DELETE, @rl.buffer.point, nil, deleted) if deleted
+    end
+
+    def backward_char(count, key)
+      @rl.buffer.point -= count
+      @rl.buffer.point = 0 if @rl.buffer.point < 0
+    end
+
+    def forward_char(count, key)
+      @rl.buffer.point += count
+      @rl.buffer.point = @rl.buffer.size if @rl.buffer.point > @rl.buffer.size
+    end
+
+    def beginning_of_line(count, key)
+      @rl.buffer.point = 0
+    end
+
+    def end_of_line(count, key)
+      @rl.buffer.point = @rl.buffer.size
+    end
+
+    def undo(count, key)
+      count.times do
+        @rl.undo.undo(@rl.buffer)
+      end
+    end
+
+  end
 end

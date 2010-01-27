@@ -5,9 +5,9 @@ require 'terminfo'
 module ReadRhine
 
   class Display
-    def initialize(buffer, tty, prompt = '')
-      @buffer = buffer
-      @tty = tty
+    def initialize(rl, prompt = '')
+      @buffer = rl.buffer
+      @tty = rl.tty
       @line = WString.new('')
 
       @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
@@ -18,8 +18,8 @@ module ReadRhine
       @prompt_width = @prompt.width
       @col = @prompt_width
 
-      @tty.print prompt if prompt
-      redisplay unless buffer.empty?
+      @tty.print prompt unless @prompt.empty?
+      redisplay unless @buffer.empty?
     end
 
     def redisplay
