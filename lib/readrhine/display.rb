@@ -19,7 +19,7 @@ module ReadRhine
       @col = @prompt_width
 
       @tty.print prompt if prompt
-      redisplay if buffer.size > 0
+      redisplay unless buffer.empty?
     end
 
     def redisplay
