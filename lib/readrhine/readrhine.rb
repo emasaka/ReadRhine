@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-require 'singleton'
-
 module ReadRhine
   def self.readline(prompt = '', history = false, options = {})
     options[:prompt] = prompt
