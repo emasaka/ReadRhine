@@ -45,7 +45,20 @@ module ReadRhine
       r.table[r.key[0]]
     end
 
+    def dup
+      duped = super
+      map = @keymap.dup
+      duped.keymap = map
+      map.each_key do |key|
+        e = map[key]
+        map[key] = e.dup if Keymap === e
+      end
+      duped
+    end
+
     protected
+
+    attr_writer :keymap         # to dup
 
     def lookup_key_hash(key)
       if key.size == 1

@@ -16,7 +16,7 @@ module ReadRhine
       @display = Display.new(self, options[:prompt] || '')
       @undo = Undo.new
       @command = Command.new(self)
-      @keymap = @@default_keymap
+      @keymap = @@default_keymap.dup
       @last_command = nil
     end
 
