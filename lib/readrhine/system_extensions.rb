@@ -5,7 +5,8 @@ class WString < String
     count = 0
     i = from
     while i < to
-      count += (self[i].ascii_only? ? 1 : 2)
+      c = self[i]
+      count += (c.ascii_only? && c.ord >= 0x20 ? 1 : 2)
       i += 1
     end
     count

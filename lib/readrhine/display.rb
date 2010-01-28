@@ -18,7 +18,7 @@ module ReadRhine
       @prompt_width = @prompt.width
       @col = @prompt_width
 
-      @tty.print prompt unless @prompt.empty?
+      printq prompt unless @prompt.empty?
       redisplay unless @buffer.empty?
     end
 
@@ -43,7 +43,7 @@ module ReadRhine
         else
           b_str = (off == 0 ? buf_str : buf_str[off .. -1])
           if off == @line.size  # inserted to end of line
-            @tty.print b_str
+            printq b_str
             cursor_move(buf_end_col, point_col)
           else
             d_str = (off == 0 ? @line : @line[off .. -1])
@@ -53,14 +53,14 @@ module ReadRhine
               ins_str = b_str[0, b_str.size - d_str.size]
               ins_w = ins_str.width
               insert_char(ins_w)
-              @tty.print ins_str
+              printq ins_str
               cursor_move(dif_col + ins_w, point_col)
             elsif d_str.end_with?(b_str) && # deleted
                 calculate_move(dif_col, d_str_w).rows == 0
               delete_char(d_str_w - b_str.width)
               cursor_move(dif_col, point_col)
             else
-              @tty.print b_str
+              printq b_str
               erase_eol buf_end_col
               cursor_move(buf_end_col, point_col)
             end
@@ -146,6 +146,10 @@ module ReadRhine
     def term_str(name, param = nil)
       t_str = (@term_str_cache[name] ||= @terminfo.tigetstr(name))
       @terminfo.tputs (param ? @terminfo.tparm(t_str, param) : t_str), 1
+    end
+
+    def printq(str)
+      @tty.print str.gsub(/[\x00-\x1f]/) {|c| '^' + (c.ord + 0x40).chr }
     end
 
   end
