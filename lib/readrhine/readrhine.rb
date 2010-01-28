@@ -10,7 +10,7 @@ module ReadRhine
   class ReadRhine
     def initialize(options = {})
       @buffer = Buffer.new(options[:preput] || '')
-      @tty = TTY.new(self)
+      @tty = TTY.new
       @display = Display.new(self, options[:prompt] || '')
       @undo = Undo.new
       @command = Command.new(self)
@@ -35,6 +35,7 @@ module ReadRhine
 
     def start
       @tty.start
+      @eof_char = @tty.eof_char
     end
 
     def finish
@@ -72,6 +73,7 @@ module ReadRhine
       seq = ''
       while true
         k = @tty.read_key
+        raise EOFError if k == @eof_char && @buffer.empty?
         seq << k
         Keymap === keymap.lookup_keyseq(seq) or return seq
       end
