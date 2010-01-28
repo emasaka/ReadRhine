@@ -3,7 +3,6 @@
 require 'terminfo'
 
 module ReadRhine
-
   class Display
     def initialize(rl, prompt = '')
       @buffer = rl.buffer
@@ -13,6 +12,7 @@ module ReadRhine
       @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
       sync_screen_size
       Signal.trap(:WINCH) { sync_screen_size }
+      @term_str_cache = {}
 
       @prompt = WString.new(prompt)
       @prompt_width = @prompt.width
@@ -30,14 +30,42 @@ module ReadRhine
       if buf_str == @line
         cursor_move(@col, point_col)
       else
-        off = w.times do |i|
+        off = buf_str.size.times do |i|
           break i if buf_str[i] != @line[i]
         end
+        dif_col = buf_str.width(0, off) + @prompt_width
+        buf_end_col = w + @prompt_width
+        cursor_move(@col, dif_col)
 
-        cursor_move(@col, buf_str.width(0, off) + @prompt_width)
-        @tty.print(off == 0 ? buf_str : buf_str[off .. -1])
-        erase_eol(w + @prompt_width)
-        cursor_move(w + @prompt_width, point_col)
+        if off == buf_str.size  # deleted end of line
+          erase_eol(dif_col)
+          cursor_move(dif_col, point_col)
+        else
+          b_str = (off == 0 ? buf_str : buf_str[off .. -1])
+          if off == @line.size  # inserted to end of line
+            @tty.print b_str
+            cursor_move(buf_end_col, point_col)
+          else
+            d_str = (off == 0 ? @line : @line[off .. -1])
+            d_str_w = d_str.width
+            if b_str.end_with?(d_str) && # inserted
+                calculate_move(dif_col, buf_end_col).rows == 0
+              ins_str = b_str[0, b_str.size - d_str.size]
+              ins_w = ins_str.width
+              insert_char(ins_w)
+              @tty.print ins_str
+              cursor_move(dif_col + ins_w, point_col)
+            elsif d_str.end_with?(b_str) && # deleted
+                calculate_move(dif_col, d_str_w).rows == 0
+              delete_char(d_str_w - b_str.width)
+              cursor_move(dif_col, point_col)
+            else
+              @tty.print b_str
+              erase_eol buf_end_col
+              cursor_move(buf_end_col, point_col)
+            end
+          end
+        end
 
         @line = buf_str.dup
       end
@@ -64,28 +92,29 @@ module ReadRhine
     end
 
     def cursor_left(n)
-      s = @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cub'), n), 1)
-      s1 = @terminfo.tputs(@terminfo.tigetstr('cub1'), 1)
+      s = term_str('cub', n)
+      s1 = term_str('cub1')
       @tty.print(s.bytesize < s1.bytesize * n ? s : s1 * n)
     end
 
     def cursor_right(n)
-      @tty.print(n == 1 ? 
-                 @terminfo.tputs(@terminfo.tigetstr('cuf1'), 1) :
-                 @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cuf'),
-                                                 n ), 1))
+      @tty.print(n == 1 ? term_str('cuf1') : term_str('cuf', n))
     end
 
     def cursor_up(n)
-      @tty.print(n == 1 ? 
-                 @terminfo.tputs(@terminfo.tigetstr('cuu1'), 1) :
-                 @terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cuu'),
-                                                 n ), 1))
+      @tty.print(n == 1 ? term_str('cuu1') : term_str('cuu', n))
     end
 
     def cursor_down(n)
-      @tty.print(@terminfo.tputs(@terminfo.tparm(@terminfo.tigetstr('cud'),
-                                                 n ), 1))
+      @tty.print term_str('cud')
+    end
+
+    def delete_char(n)
+      @tty.print(n == 1 ? term_str('dch1') : term_str('dch', n))
+    end
+
+    def insert_char(n)
+      @tty.print term_str('ich', n)
     end
 
     def calculate_move(from, to)
@@ -96,11 +125,11 @@ module ReadRhine
     def erase_eol(col)
       lw = @line.width + @prompt_width
       if col < lw
-        el = @terminfo.tputs(@terminfo.tigetstr('el'), 1)
+        el = term_str('el')
         @tty.print el
         m = calculate_move(col, lw)
         if m.rows > 0
-          el1 = @terminfo.tputs(@terminfo.tigetstr('el1'), 1)
+          el1 = term_str('el1')
           m.rows.times do
             cursor_down 1
             @tty.print el1, el
@@ -112,6 +141,11 @@ module ReadRhine
 
     def sync_screen_size
       @screen_rows, @screen_cols = TermInfo.tiocgwinsz(@tty.stdout)
+    end
+
+    def term_str(name, param = nil)
+      t_str = (@term_str_cache[name] ||= @terminfo.tigetstr(name))
+      @terminfo.tputs (param ? @terminfo.tparm(t_str, param) : t_str), 1
     end
 
   end
