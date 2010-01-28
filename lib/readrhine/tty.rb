@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 require 'termios'
+require 'singleton'
 
 module ReadRhine
   class TTY
+    include Singleton
+
     def start
       @orig_state = Termios.tcgetattr(STDIN)
       @state = @orig_state.dup

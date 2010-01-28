@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'singleton'
+
 module ReadRhine
   def self.readline(prompt = '', history = false, options = {})
     options[:prompt] = prompt
@@ -10,7 +12,7 @@ module ReadRhine
   class ReadRhine
     def initialize(options = {})
       @buffer = Buffer.new(options[:preput] || '')
-      @tty = TTY.new
+      @tty = TTY.instance
       @display = Display.new(self, options[:prompt] || '')
       @undo = Undo.new
       @command = Command.new(self)
