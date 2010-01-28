@@ -74,8 +74,8 @@ module ReadRhine
       seq = ''
       while true
         k = @tty.read_key
-        raise EOFError if k == @eof_char && @buffer.empty?
         seq << k
+        raise EOFError if seq == @eof_char && @buffer.empty?
         Keymap === keymap.lookup_keyseq(seq) or return seq
       end
     end
