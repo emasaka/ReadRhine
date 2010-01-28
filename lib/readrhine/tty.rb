@@ -10,7 +10,8 @@ module ReadRhine
     def start
       @orig_state = Termios.tcgetattr(STDIN)
       @state = @orig_state.dup
-      @state.lflag &= ~Termios::ECHO & ~Termios::ICANON & Termios::ISIG
+      @state.lflag &=
+        ~Termios::ECHO & ~Termios::ICANON & Termios::ISIG & ~Termios::INLCR
       Termios.tcsetattr(STDIN, Termios::TCSANOW, @state)
     end
 
