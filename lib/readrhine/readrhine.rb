@@ -10,6 +10,8 @@ module ReadRhine
   end
 
   class ReadRhine
+    DONE = :done
+
     def initialize(options = {})
       @buffer = Buffer.new(options[:preput] || '')
       @tty = TTY.instance
@@ -51,13 +53,12 @@ module ReadRhine
     end
 
     def charloop
-      while true
-        seq = read_key_seq(@keymap)
-        if seq == "\n"
-          break
+      catch(ReadRhine::DONE) do
+        while true
+          seq = read_key_seq(@keymap)
+          dispatch(seq, @keymap)
+          @display.redisplay
         end
-        dispatch(seq, @keymap)
-        @display.redisplay
       end
     end
 

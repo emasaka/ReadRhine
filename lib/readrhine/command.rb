@@ -56,5 +56,9 @@ module ReadRhine
       end
     end
 
+    def done(count, key)
+      throw ReadRhine::DONE
+    end
+
   end
 end

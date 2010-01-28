@@ -4,6 +4,8 @@ module ReadRhine
   class ReadRhine
     @@default_keymap = Keymap.new
 
+    @@default_keymap["\n"] = :done
+
     @@default_keymap["\C-a"] = :beginning_of_line
     @@default_keymap["\C-b"] = :backward_char
     @@default_keymap["\C-d"] = :delete_char
