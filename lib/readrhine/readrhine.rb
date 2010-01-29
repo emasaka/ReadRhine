@@ -48,8 +48,8 @@ module ReadRhine
     end
 
     def finish
-      if @buffer.point != @buffer.size
-        @buffer.point = @buffer.size
+      if @buffer.end_of_buffer?
+        @buffer.end_of_buffer
         @display.redisplay
       end
       print "\n"

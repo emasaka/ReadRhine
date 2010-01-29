@@ -39,7 +39,7 @@ module ReadRhine
 
     def forward_char(count, key)
       @rl.buffer.point += count
-      @rl.buffer.point = @rl.buffer.size if @rl.buffer.point > @rl.buffer.size
+      @rl.buffer.end_of_buffer if @rl.buffer.point > @rl.buffer.size
     end
 
     def beginning_of_line(count, key)
@@ -47,7 +47,7 @@ module ReadRhine
     end
 
     def end_of_line(count, key)
-      @rl.buffer.point = @rl.buffer.size
+      @rl.buffer.end_of_buffer
     end
 
     def undo(count, key)
@@ -64,7 +64,7 @@ module ReadRhine
       if @rl.history
         s = @rl.history.previous(@rl.buffer.to_s, count)
         @rl.buffer.replace(s) if s
-        @rl.buffer.point = @rl.buffer.size
+        @rl.buffer.end_of_buffer
       end
     end
 

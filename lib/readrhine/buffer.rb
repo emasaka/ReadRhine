@@ -4,7 +4,7 @@ module ReadRhine
   class Buffer
     def initialize(str = '')
       @buffer = WString.new(str)
-      @point = @buffer.size
+      end_of_buffer
     end
 
     attr_accessor :point
@@ -52,6 +52,14 @@ module ReadRhine
         end
       end
       deleted
+    end
+
+    def end_of_buffer?
+      @point == @buffer.size
+    end
+
+    def end_of_buffer
+      @point = @buffer.size
     end
 
   end
