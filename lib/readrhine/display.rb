@@ -106,7 +106,7 @@ module ReadRhine
     end
 
     def cursor_down(n)
-      @tty.print term_str('cud')
+      @tty.print term_str('cud', n)
     end
 
     def delete_char(n)
