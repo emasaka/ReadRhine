@@ -7,12 +7,16 @@ require 'readrhine/tty'
 require 'readrhine/undo'
 require 'readrhine/command'
 require 'readrhine/keymap'
+require 'readrhine/history'
 
 require 'readrhine/default_keymap'
 require 'readrhine/readrhine'
 
 
 if __FILE__ == $0
-  str = ReadRhine.readline('> ')
-  p str
+  while true
+    str = ReadRhine.readline('> ', true)
+    break if str.empty?
+    p str
+  end
 end

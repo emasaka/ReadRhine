@@ -13,6 +13,8 @@ module ReadRhine
     @@default_keymap["\C-j"] = :done
     @@default_keymap["\C-k"] = :kill_line
     @@default_keymap["\C-m"] = :done
+    @@default_keymap["\C-n"] = :next_history
+    @@default_keymap["\C-p"] = :previous_history
     @@default_keymap["\C-u"] = :unix_line_discard
     @@default_keymap["\C-_"] = :undo
     @@default_keymap["\x7f"] = :backward_delete_char

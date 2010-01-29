@@ -60,5 +60,17 @@ module ReadRhine
       throw ReadRhine::DONE
     end
 
+    def previous_history(count, key)
+      if @rl.history
+        s = @rl.history.previous(@rl.buffer.to_s, count)
+        @rl.buffer.replace(s) if s
+        @rl.buffer.point = @rl.buffer.size
+      end
+    end
+
+    def next_history(count, key)
+      previous_history(- count, key)
+    end
+
   end
 end

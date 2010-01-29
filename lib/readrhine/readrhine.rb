@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 
 module ReadRhine
+  @@global_history = nil        # for ReadRhine::readline
+
+  # for compatibility to Readline module
   def self.readline(prompt = '', history = false, options = {})
-    options[:prompt] = prompt
-    options[:history] = history
-    ReadRhine.new(options).readline
+    rl = ReadRhine.new(options.merge({prompt: prompt, history: history}))
+    rl.history = (@@global_history ||= History.new) if history
+    rl.readline
   end
 
   class ReadRhine
     DONE = :done
 
     def initialize(options = {})
+      @options = options
       @buffer = Buffer.new(options[:preput] || '')
       @tty = TTY.instance
       @display = Display.new(self, options[:prompt] || '')
       @undo = Undo.new
       @command = Command.new(self)
       @keymap = @@default_keymap.dup
+      @history = History.new if @options[:history]
       @last_command = nil
     end
 
@@ -27,11 +32,13 @@ module ReadRhine
       ensure
         finish
       end
-      @buffer.to_s
+      str = @buffer.to_s
+      @history.reset_state.add(str) if @options[:history]
+      str
     end
 
     attr_reader :buffer, :undo, :tty
-    attr_accessor :keymap
+    attr_accessor :keymap, :history
 
     private
 
