@@ -14,14 +14,13 @@ module ReadRhine
     DONE = :done
 
     def initialize(options = {})
-      @options = options
       @buffer = Buffer.new(options[:preput] || '')
       @tty = TTY.instance
       @display = Display.new(self, options[:prompt] || '')
       @undo = Undo.new
       @command = Command.new(self)
       @keymap = @@default_keymap.dup
-      @history = History.new if @options[:history]
+      @history = History.new if options[:history]
       @last_command = nil
     end
 
@@ -33,7 +32,7 @@ module ReadRhine
         finish
       end
       str = @buffer.to_s
-      @history.reset_state.add(str) if @options[:history]
+      @history.reset_state.add(str) if @history
       str
     end
 
