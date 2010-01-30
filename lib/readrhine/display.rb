@@ -12,6 +12,7 @@ module ReadRhine
       @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
       sync_screen_size
       Signal.trap(:WINCH) { redisplay_after_sigwinch }
+      Signal.trap(:CONT) { @tty.start }
       @term_str_cache = {}
 
       @prompt = WString.new(prompt)
