@@ -22,5 +22,6 @@ class ReadRhine
 
   @@default_keymap["\e[D"] = :backward_char
   @@default_keymap["\e[C"] = :forward_char
-
+  @@default_keymap["\e[A"] = :previous_history
+  @@default_keymap["\e[B"] = :next_history
 end
