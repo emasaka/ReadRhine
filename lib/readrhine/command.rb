@@ -64,7 +64,6 @@ module ReadRhine
       if @rl.history
         s = @rl.history.previous(@rl.buffer.to_s, count)
         @rl.buffer.replace(s) if s
-        @rl.buffer.end_of_buffer
       end
     end
 

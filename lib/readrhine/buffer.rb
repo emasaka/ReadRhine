@@ -15,6 +15,7 @@ module ReadRhine
 
     def replace(str)
       @buffer[0..-1] = str
+      end_of_buffer
     end
 
     def size
