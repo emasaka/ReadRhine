@@ -14,3 +14,36 @@ module ReadRhine
     end
   end
 end
+
+module Signal
+  @@handlers = {}
+
+  class << self
+    alias :trap_orig :trap
+
+    def trap(signal, cmd = nil, &blk)
+      signal = signal.to_sym if String === signal
+      proc =
+        if blk
+          blk
+        elsif ['SYSTEM_DEFAULT', :SYSTEM_DEFAULT,
+               'SIG_IGN', :SIG_IGN, 'SIG_DFL', :SIG_DFL,
+               'DEFAULT', :DEFAULT, 'IGNORE', :IGNORE,
+               'EXIT', :EXIT, '', nil ].member?(cmd)
+          @@handlers.delete(signal)
+          return trap_orig(signal, cmd)
+          'Not reached'
+        else
+          ->{ eval cmd }
+        end
+
+      if @@handlers[signal]
+        @@handlers[signal] << proc
+      else
+        @@handlers[signal] = [ proc ]
+        trap_orig(signal) { @@handlers[signal].each {|h| h.call } }
+      end
+      nil
+    end
+  end
+end
