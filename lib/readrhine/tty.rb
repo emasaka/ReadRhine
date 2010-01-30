@@ -3,7 +3,7 @@
 require 'termios'
 require 'singleton'
 
-module ReadRhine
+class ReadRhine
   class TTY
     include Singleton
 

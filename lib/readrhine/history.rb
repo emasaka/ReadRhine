@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module ReadRhine
+class ReadRhine
   class History
     DEFAULT_MAX_ENTRIES = 1000
 

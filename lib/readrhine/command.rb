@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module ReadRhine
+class ReadRhine
   class Command
     def initialize(rl)
       @rl = rl

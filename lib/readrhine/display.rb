@@ -2,23 +2,25 @@
 
 require 'terminfo'
 
-module ReadRhine
+class ReadRhine
   class Display
     def initialize(rl, prompt = '')
       @buffer = rl.buffer
       @tty = rl.tty
-      @line = WString.new('')
+
+      @prompt = WString.new(prompt)
+      @prompt_width = @prompt.width
 
       @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
       sync_screen_size
       Signal.trap(:WINCH) { redisplay_after_sigwinch }
       Signal.trap(:CONT) { @tty.start }
       @term_str_cache = {}
+    end
 
-      @prompt = WString.new(prompt)
-      @prompt_width = @prompt.width
+    def start
+      @line = WString.new('')
       @col = @prompt_width
-
       printq @prompt unless @prompt.empty?
       redisplay unless @buffer.empty?
     end

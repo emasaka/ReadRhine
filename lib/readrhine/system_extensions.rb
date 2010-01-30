@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module ReadRhine
+class ReadRhine
   class WString < String
     def width(from = 0, to = size) # XXX: workaround
       count = 0

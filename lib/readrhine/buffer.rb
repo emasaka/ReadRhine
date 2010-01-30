@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module ReadRhine
+class ReadRhine
   class Buffer
     def initialize(str = '')
       @buffer = WString.new(str)
@@ -11,6 +11,11 @@ module ReadRhine
 
     def to_s
       @buffer
+    end
+
+    def clear
+      @buffer.clear
+      end_of_buffer
     end
 
     def replace(str)
