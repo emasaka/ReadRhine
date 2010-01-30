@@ -14,8 +14,9 @@ require 'readrhine/readrhine'
 
 
 if __FILE__ == $0
+  rl = ReadRhine.new(prompt: '> ', history: true)
   while true
-    str = ReadRhine.readline('> ', true)
+    str = rl.readline
     break if str.empty?
     p str
   end
