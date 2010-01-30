@@ -11,14 +11,14 @@ module ReadRhine
 
       @terminfo = TermInfo.new(ENV['TERM'], @tty.stdout)
       sync_screen_size
-      Signal.trap(:WINCH) { sync_screen_size }
+      Signal.trap(:WINCH) { redisplay_after_sigwinch }
       @term_str_cache = {}
 
       @prompt = WString.new(prompt)
       @prompt_width = @prompt.width
       @col = @prompt_width
 
-      printq prompt unless @prompt.empty?
+      printq @prompt unless @prompt.empty?
       redisplay unless @buffer.empty?
     end
 
@@ -141,6 +141,17 @@ module ReadRhine
 
     def sync_screen_size
       @screen_rows, @screen_cols = TermInfo.tiocgwinsz(@tty.stdout)
+    end
+
+    def redisplay_after_sigwinch
+      cursor_move(@col, 0)
+      erase_eol 0
+
+      sync_screen_size
+
+      printq @prompt unless @prompt.empty?
+      printq @buffer.to_s
+      cursor_move(@buffer.to_s.width + @prompt_width, @col)
     end
 
     def term_str(name, param = nil)
