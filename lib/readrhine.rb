@@ -8,6 +8,7 @@ require 'readrhine/undo'
 require 'readrhine/command'
 require 'readrhine/keymap'
 require 'readrhine/history'
+require 'readrhine/completion'
 
 require 'readrhine/default_keymap'
 require 'readrhine/readrhine'

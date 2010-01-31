@@ -4,6 +4,7 @@ class ReadRhine
   class Undo
     INSERT = 1
     DELETE = 2
+    REPLACE = 3
 
     Entry = Struct.new('Entry', :what, :point, :size, :text, :next)
 
@@ -25,6 +26,10 @@ class ReadRhine
           buffer.delete_char(entry.size)
         when Undo::DELETE
           buffer.point = entry.point
+          buffer.insert(entry.text)
+        when Undo::REPLACE
+          buffer.point = entry.point
+          buffer.delete_char(entry.size)
           buffer.insert(entry.text)
         end
         @undo_list = entry.next

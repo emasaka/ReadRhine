@@ -71,5 +71,28 @@ class ReadRhine
       previous_history(- count, key)
     end
 
+    def complete(count, key)
+      do_complete(->(text){@rl.completion.attempted_completion(text)})
+    end
+
+    def menu_complete(count, key)
+      getnext = (@rl.last_command == :menu_complete)
+      do_complete(->(text){@rl.completion.menu_completion(text, getnext)})
+    end
+
+    private
+
+    def do_complete(select_proc, *arg)
+      text = @rl.completion.completing_word
+      newtext = select_proc.call(text, *arg)
+      if text != newtext
+        @rl.undo.add(Undo::REPLACE, @rl.buffer.point, newtext.size, text)
+        @rl.buffer.replace(newtext, @rl.buffer.point - text.size,
+                           @rl.buffer.point )
+      end
+    rescue ReadRhine::NoCompletion
+      # TODO: some notification
+    end
+
   end
 end

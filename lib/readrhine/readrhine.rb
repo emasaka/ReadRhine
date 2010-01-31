@@ -11,6 +11,7 @@ class ReadRhine
     @command = Command.new(self)
     @keymap = @@default_keymap.dup
     @history = History.new if options[:history]
+    @completion = Completion.new(@buffer)
     @last_command = nil
   end
 
@@ -26,8 +27,10 @@ class ReadRhine
     str
   end
 
-  attr_reader :buffer, :undo, :tty
+  attr_reader :buffer, :undo, :tty, :completion, :last_command
   attr_accessor :keymap, :history
+
+  attr_reader :last_command
 
   private
 

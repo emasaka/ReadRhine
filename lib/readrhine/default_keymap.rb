@@ -9,6 +9,7 @@ class ReadRhine
   @@default_keymap["\C-e"] = :end_of_line
   @@default_keymap["\C-f"] = :forward_char
   @@default_keymap["\C-h"] = :backward_delete_char
+  @@default_keymap["\C-i"] = :complete
   @@default_keymap["\C-j"] = :done
   @@default_keymap["\C-k"] = :kill_line
   @@default_keymap["\C-m"] = :done
