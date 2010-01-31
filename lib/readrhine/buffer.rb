@@ -18,9 +18,13 @@ class ReadRhine
       end_of_buffer
     end
 
-    def replace(str)
-      @buffer[0..-1] = str
-      end_of_buffer
+    def replace(str, from = 0, to = -1)
+      @buffer[from..to] = str
+      if to == -1
+        end_of_buffer
+      else
+        @point = from + str.size
+      end
     end
 
     def size
