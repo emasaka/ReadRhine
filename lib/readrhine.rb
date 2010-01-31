@@ -14,10 +14,20 @@ require 'readrhine/readrhine'
 
 
 if __FILE__ == $0
-  rl = ReadRhine.new(prompt: '> ', history: true)
-  while true
-    str = rl.readline
-    break if str.empty?
-    p str
+  if ARGV[0] == '--rlcompat'
+    puts 'ReadRhine compatible'
+    require 'readrhine/rlcompat'
+    while true
+      str = ReadRhine.readline('> ', true)
+      break if str.empty?
+      p str
+    end
+  else
+    rl = ReadRhine.new(prompt: '> ', history: true)
+    while true
+      str = rl.readline
+      break if str.empty?
+      p str
+    end
   end
 end
