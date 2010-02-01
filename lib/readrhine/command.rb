@@ -94,9 +94,10 @@ class ReadRhine
       text = @rl.completion.completing_word
       newtext = select_proc.call(text, *arg)
       if text != newtext
-        @rl.undo.add(Undo::REPLACE, @rl.buffer.point, newtext.size, text)
-        @rl.buffer.replace(newtext, @rl.buffer.point - text.size,
-                           @rl.buffer.point )
+        @rl.undo.add(Undo::G_BEGIN, nil, nil, nil)
+        backward_delete_char(text.size, nil)
+        insert_char(1, newtext)
+        @rl.undo.add(Undo::G_END, nil, nil, nil)
       end
     rescue ReadRhine::NoCompletion
       # TODO: some notification

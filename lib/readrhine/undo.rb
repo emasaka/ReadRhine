@@ -6,7 +6,8 @@ class ReadRhine
   class Undo
     INSERT = 1
     DELETE = 2
-    REPLACE = 3
+    G_BEGIN = 3
+    G_END = 4
 
     Entry = Struct.new('Entry', :what, :point, :size, :text, :next)
 
@@ -21,21 +22,19 @@ class ReadRhine
     end
 
     def undo
-      entry = @undo_list
-      raise ReadRhine::NoMoreUndo unless entry
-      case entry.what
+      raise ReadRhine::NoMoreUndo unless @undo_list
+      case @undo_list.what
       when Undo::INSERT
-        @buffer.point = entry.point
-        @buffer.delete_char(entry.size)
+        @buffer.point = @undo_list.point
+        @buffer.delete_char(@undo_list.size)
       when Undo::DELETE
-        @buffer.point = entry.point
-        @buffer.insert(entry.text)
-      when Undo::REPLACE
-        @buffer.point = entry.point
-        @buffer.delete_char(entry.size)
-        @buffer.insert(entry.text)
+        @buffer.point = @undo_list.point
+        @buffer.insert(@undo_list.text)
+      when Undo::G_END
+        @undo_list = @undo_list.next
+        undo until @undo_list.what == Undo::G_BEGIN
       end
-      @undo_list = entry.next
+      @undo_list = @undo_list.next
     end
 
   end
