@@ -1,0 +1,40 @@
+= ReadRhine - Readline-like library written in Ruby
+
+ReadRhine is a text input library like Readline.
+It's written and extendable in Ruby.
+
+== SYNOPSYS
+
+  require 'readrhine'
+  text = ReadRhine.new(prompt: '> ').readline
+
+or
+
+  require 'readrhine/rlcompat'
+  text = ReadRhine.readline('> ')
+
+== REQUIREMENTS
+
+- Ruby 1.9.1 or later
+- ruby-termios
+- ruby-terminfo
+
+== TODO
+
+- More about completion
+- History search
+- Per-word cursor movement
+- Digit argument
+- Kill-ring
+- East Asian character width support in formal way
+- Hooks
+- Behavior customizing APIs like option variables
+- Smarter redisplay (less characters output, portable, etc)
+- Safe signal handling
+- RDoc
+- Lisence term
+- gem
+
+== Author
+
+Masakazu Takahashi <emasaka@gmail.com>
