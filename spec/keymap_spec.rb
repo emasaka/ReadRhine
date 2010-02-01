@@ -24,4 +24,12 @@ describe ReadRhine::Keymap, "when created" do
     @keymap["\e[D"].should == :backward_char
     @keymap["\e[C"].should == :forward_char
   end
+
+  it "should binded to multiple combination key" do
+    @keymap["\e[D"] = :backward_char
+    @keymap["\eOH"] = :beginning_of_line
+
+    @keymap["\e[D"].should == :backward_char
+    @keymap["\eOH"].should == :beginning_of_line
+  end
 end
