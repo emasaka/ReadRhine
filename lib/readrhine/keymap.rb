@@ -17,7 +17,7 @@ class ReadRhine
         if f
           f
         elsif key.size == 1
-          :insert_char
+          :insert
         else
           raise CommandNotFound, key
         end

@@ -6,7 +6,7 @@ class ReadRhine
       @rl = rl
     end
 
-    def insert_char(count, key)
+    def insert(count, key)
       s = (count == 1 ? key : key * count)
       @rl.undo.add(Undo::INSERT, @rl.buffer.point, s.size, nil)
       @rl.buffer.insert(s)
@@ -96,7 +96,7 @@ class ReadRhine
       if text != newtext
         @rl.undo.add(Undo::G_BEGIN, nil, nil, nil)
         backward_delete_char(text.size, nil)
-        insert_char(1, newtext)
+        insert(1, newtext)
         @rl.undo.add(Undo::G_END, nil, nil, nil)
       end
     rescue ReadRhine::NoCompletion

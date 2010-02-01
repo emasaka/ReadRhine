@@ -7,7 +7,7 @@ describe ReadRhine::Keymap, "when created" do
 
   it "should no function" do
     @keymap.lookup_keyseq("\C-h").should == nil
-    @keymap["\C-h"].should == :insert_char
+    @keymap["\C-h"].should == :insert
   end
 
   it "should binded to single key" do
