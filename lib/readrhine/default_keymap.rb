@@ -25,4 +25,6 @@ class ReadRhine
   @@default_keymap["\e[C"] = :forward_char
   @@default_keymap["\e[A"] = :previous_history
   @@default_keymap["\e[B"] = :next_history
+  @@default_keymap["\eOH"] = :beginning_of_line
+  @@default_keymap["\eOF"] = :end_of_line
 end
