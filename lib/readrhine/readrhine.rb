@@ -7,7 +7,7 @@ class ReadRhine
     @buffer = Buffer.new(options[:preput] || '')
     @tty = TTY.instance
     @display = Display.new(self, options[:prompt] || '')
-    @undo = Undo.new
+    @undo = Undo.new(buffer)
     @command = Command.new(self)
     @keymap = @@default_keymap.dup
     @history = History.new if options[:history]
