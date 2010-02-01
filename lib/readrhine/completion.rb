@@ -19,10 +19,14 @@ class ReadRhine
       @buffer.to_s[0 .. @buffer.point].shellsplit[-1]
     end
 
-    def attempted_completion(text)
+    def completion_list(text)
       list = @completion_proc.call(text)
       raise NoCompletion if list.empty?
-      max_common_str list
+      list
+    end
+
+    def attempted_completion(text)
+      max_common_str completion_list(text)
     end
 
     def menu_completion(text, getnext = false)
@@ -49,9 +53,7 @@ class ReadRhine
     end
 
     def menu_completion_enum(text)
-      list = @completion_proc.call(text)
-      raise NoCompletion if list.empty?
-      list.to_enum
+      completion_list(text).to_enum
     end
 
   end
