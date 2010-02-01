@@ -46,3 +46,33 @@ describe ReadRhine::Undo, "when edited" do
     @buffer.to_s.should == ''
   end
 end
+
+describe ReadRhine::Undo, "when edited with undo group" do
+  before do
+    @buffer = ReadRhine::Buffer.new
+    @undo = ReadRhine::Undo.new(@buffer)
+
+    # undo group start
+    @undo.add(ReadRhine::Undo::G_BEGIN, nil, nil, nil)
+
+    # insert text
+    @text1 = 'abcdefg'
+    @undo.add(ReadRhine::Undo::INSERT, @buffer.point, @text1.size, nil)
+    @buffer.insert(@text1)
+
+    # delete end of text
+    @delete1 = -2
+    deleted = @buffer.delete_char(@delete1)
+    @undo.add(ReadRhine::Undo::DELETE, @buffer.point, nil, deleted)
+
+    # undo group end
+    @undo.add(ReadRhine::Undo::G_END, nil, nil, nil)
+  end
+
+  it "should undone" do
+    @buffer.to_s.should == @text1[0...@delete1]
+
+    @undo.undo
+    @buffer.to_s.should == ''
+  end
+end
