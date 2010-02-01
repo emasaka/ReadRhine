@@ -62,8 +62,12 @@ class ReadRhine
 
     def previous_history(count, key)
       if @rl.history
-        s = @rl.history.previous(@rl.buffer.to_s, count)
-        @rl.buffer.replace(s) if s
+        begin
+          s = @rl.history.previous(@rl.buffer.to_s, count)
+          @rl.buffer.replace(s)
+        rescue ReadRhine::NoMoreHistory
+          # TODO: some notification
+        end
       end
     end
 

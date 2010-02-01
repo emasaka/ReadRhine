@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 class ReadRhine
+  class NoMoreHistory < StandardError; end
+
   class History
     DEFAULT_MAX_ENTRIES = 1000
 
@@ -29,10 +31,9 @@ class ReadRhine
       maybe_save_line(line)
       if count != 0
         i = @index - count
-        if 0 <= i && i <= @history.size
-          @index = i
-          ref_with_modified(@index)
-        end
+        raise NoMoreHistory unless 0 <= i && i <= @history.size
+        @index = i
+        ref_with_modified(@index)
       end
     end
 

@@ -5,12 +5,12 @@ describe ReadRhine::History, "when empty" do
     @history = ReadRhine::History.new
   end
 
-  it "should not go to previous line" do
-    @history.previous('', 1).should == nil
+  it "should raiase exception when go to previous line" do
+    ->{@history.previous('', 1)}.should raise_error(ReadRhine::NoMoreHistory)
   end
 
-  it "should not go to next line" do
-    @history.previous('', -1).should == nil
+  it "should raiase exception when go to next line" do
+    ->{@history.previous('', -1)}.should raise_error(ReadRhine::NoMoreHistory)
   end
 end
 
