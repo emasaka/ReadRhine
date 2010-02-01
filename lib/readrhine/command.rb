@@ -51,8 +51,12 @@ class ReadRhine
     end
 
     def undo(count, key)
-      count.times do
-        @rl.undo.undo(@rl.buffer)
+      begin
+        count.times do
+          @rl.undo.undo(@rl.buffer)
+        end
+      rescue ReadRhine::NoMoreUndo
+        # TODO: some notification
       end
     end
 
