@@ -6,7 +6,7 @@ class ReadRhine
   def initialize(options = {})
     @buffer = Buffer.new(options[:preput] || '')
     @tty = TTY.instance
-    @display = Display.new(self, options[:prompt] || '')
+    @display = Display.new(@buffer, @tty, options[:prompt] || '')
     @undo = Undo.new(buffer)
     @command = Command.new(self)
     @keymap = @@default_keymap.dup

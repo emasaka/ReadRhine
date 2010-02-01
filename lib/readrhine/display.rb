@@ -4,9 +4,9 @@ require 'terminfo'
 
 class ReadRhine
   class Display
-    def initialize(rl, prompt = '')
-      @buffer = rl.buffer
-      @tty = rl.tty
+    def initialize(buffer, tty, prompt = '')
+      @buffer = buffer
+      @tty = tty
 
       @prompt = WString.new(prompt)
       @prompt_width = @prompt.width
