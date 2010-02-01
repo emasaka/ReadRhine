@@ -36,7 +36,7 @@ class ReadRhine
           e = Keymap.new
           r.table[r.key[0]] = e
         end
-        e[key[1..-1]] = fun
+        e[r.key[1..-1]] = fun
       end
     end
 
