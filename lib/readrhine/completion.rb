@@ -20,7 +20,7 @@ class ReadRhine
     end
 
     def completion_list(text)
-      list = @completion_proc.call(text)
+      list = @completion_proc.(text)
       raise NoCompletion if list.empty?
       list
     end

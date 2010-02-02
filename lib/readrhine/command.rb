@@ -92,7 +92,7 @@ class ReadRhine
 
     def do_complete(select_proc, *arg)
       text = @rl.completion.completing_word
-      newtext = select_proc.call(text, *arg)
+      newtext = select_proc.(text, *arg)
       if text != newtext
         @rl.undo.add(Undo::G_BEGIN, nil, nil, nil)
         backward_delete_char(text.size, nil)

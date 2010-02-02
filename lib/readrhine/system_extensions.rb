@@ -41,7 +41,7 @@ module Signal
         @@handlers[signal] << proc
       else
         @@handlers[signal] = [ proc ]
-        trap_orig(signal) { @@handlers[signal].each {|h| h.call } }
+        trap_orig(signal) { @@handlers[signal].each {|h| h.() } }
       end
       nil
     end
