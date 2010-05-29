@@ -55,8 +55,14 @@ class ReadRhine
                 calculate_move(dif_col, buf_end_col).rows == 0
               ins_str = b_str[0, b_str.size - d_str.size]
               ins_w = ins_str.width
-              insert_char(ins_w)
-              printq ins_str
+              begin
+                insert_char(ins_w)
+                printq ins_str
+              rescue TermInfo::TermInfoError
+                start_insert_mode
+                printq ins_str
+                exit_insert_mode
+              end
               cursor_move(dif_col + ins_w, point_col)
             elsif d_str.end_with?(b_str) && # deleted
                 calculate_move(dif_col, d_str_w).rows == 0
@@ -118,6 +124,14 @@ class ReadRhine
 
     def insert_char(n)
       @tty.print term_str('ich', n)
+    end
+
+    def start_insert_mode
+      @tty.print term_str('smir')
+    end
+
+    def exit_insert_mode
+      @tty.print term_str('rmir')
     end
 
     def calculate_move(from, to)
