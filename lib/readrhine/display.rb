@@ -146,12 +146,21 @@ class ReadRhine
         @tty.print el
         m = calculate_move(col, lw)
         if m.rows > 0
-          el1 = term_str('el1')
-          m.rows.times do
-            cursor_down 1
-            @tty.print el1, el
+          begin
+            el1 = term_str('el1')
+            m.rows.times do
+              cursor_down 1
+              @tty.print el1, el
+            end
+            cursor_up m.rows
+          rescue TermInfo::TermInfoError
+            @tty.print term_str('sc'), term_str('cr')
+            m.rows.times do
+              cursor_down 1
+              @tty.print el
+            end
+            @tty.print term_str('rc')
           end
-          cursor_up m.rows
         end
       end
     end
